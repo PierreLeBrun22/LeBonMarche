@@ -1,16 +1,8 @@
-# lebonmarche
+# LeBonMarché
 
-A new Flutter project.
+**Une application de mise en relation entre agriculteurs et particuliers.**
+**Merci à [planets-flutter](https://github.com/sergiandreplace/planets-flutter) et [Smart Bracelet App](https://dribbble.com/shots/6193248-Smart-Bracelet-App) pour les designs.**    
 
-## Getting Started
+## Authors
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+* **Pierre LE BRUN** - [Github profile](https://github.com/PierreLeBrun22)

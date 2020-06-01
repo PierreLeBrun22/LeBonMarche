@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "981726084171",
+    "firebase_url": "https://lebonmarche-36611.firebaseio.com",
+    "project_id": "lebonmarche-36611",
+    "storage_bucket": "lebonmarche-36611.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:981726084171:android:6885ba4273385e23a7a1ce",
+        "android_client_info": {
+          "package_name": "com.example.lebonmarche"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "981726084171-nmnu6nc0mpvlftg90qeesbmgc7kk3f59.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyAp-1M4d9nfALWgKvTZi416VtSP-A7l8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "981726084171-nmnu6nc0mpvlftg90qeesbmgc7kk3f59.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

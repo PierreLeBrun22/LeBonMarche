@@ -1,30 +1,48 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility that Flutter provides. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lebonmarche/model/service.dart';
+import 'package:image_test_utils/image_test_utils.dart';
 
-import 'package:lebonmarche/main.dart';
+List<Service> services = [
+  const Service(
+    name: "Daycare",
+    location: "Lannion",
+    description: "A coupon for 2 hours",
+    image:
+        "https://raw.githubusercontent.com/PierreLeBrun22/MyServices/master/assets/img/baby.png",
+    partners: ["Daycare Lannion", "Baby Way"],
+    prix: 20,
+    statut: "Both",
+    serviceId: "-LeHAyX79q_HBaW-s9xQ",
+  ),
+];
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
+  //Test functionnal
+  testWidgets('Succes if the services are displayed', (WidgetTester tester) async {
+    provideMockedNetworkImages(() async {
+      
+      Widget testWidget = new MediaQuery(
+          data: new MediaQueryData(),
+          child: new MaterialApp(
+              home: new Scaffold(
+                  body: new Stack(
+            children: <Widget>[
+              new Container(
+                padding: EdgeInsets.only(top: 60.0),
+                child: new Column(children: <Widget>[
+                ]),
+              ),
+            ],
+          ))));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+      await tester.pumpWidget(testWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+      expect(find.text('Daycare'), findsOneWidget);
+      expect(find.text('Statut: Both'), findsOneWidget);
+      expect(find.text("Prix TVA: "+(20+20*0.2).toString()+" €"), findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+      /// No crashes.
+    });
   });
 }
