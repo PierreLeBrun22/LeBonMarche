@@ -79,9 +79,7 @@ matrix:
       before_script:
         - pip install six
         - brew update
-        - brew install --HEAD libimobiledevice
-        - brew install ideviceinstaller
-        - brew install ios-deploy
+        - sudo xcode-select --install
         - git clone https://github.com/flutter/flutter.git
       script:
         - ./flutter/bin/flutter -v build ios --no-codesign
