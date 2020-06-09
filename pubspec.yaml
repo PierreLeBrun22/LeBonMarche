@@ -28,6 +28,7 @@ dependencies:
   font_awesome_flutter: ^8.4.0
   percent_indicator: ^1.0.14
   qr_flutter: ^2.0.0
+  intl: ^0.16.1
 
 dev_dependencies:
   flutter_test:
@@ -58,6 +59,15 @@ flutter:
     - family: Satisfy
       fonts: 
         - asset: assets/fonts/Satisfy.ttf
+    - family: ChelseaMarket
+      fonts: 
+        - asset: assets/fonts/ChelseaMarket.ttf
+    - family: IndieFlower
+      fonts: 
+        - asset: assets/fonts/IndieFlower.ttf
+    - family: Dosis
+      fonts: 
+        - asset: assets/fonts/Dosis.ttf
 
   assets:
     - assets/img/

@@ -1,4 +1,4 @@
-package com.example.myservices;
+package com.example.lebonmarche;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

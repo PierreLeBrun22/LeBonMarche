@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:lebonmarche/services/authentication.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:lebonmarche/Widgets/Profile/ProfilMain.dart';
+import 'package:lebonmarche/Widgets/Profile/ProfilParticulier.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:lebonmarche/model/service.dart';
+import 'package:lebonmarche/model/marche.dart';
+import 'package:lebonmarche/model/commande.dart';
 import 'package:lebonmarche/services/fetch_data.dart' as dataFetch;
+import 'package:lebonmarche/colors.dart';
+import 'package:lebonmarche/Widgets/Market/MarketParticulier.dart';
+import 'package:lebonmarche/text_style.dart';
+import 'package:lebonmarche/Widgets/CommandsPage/CommandsPage.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.auth, this.userId, this.onSignedOut})
@@ -28,7 +33,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _checkEmailVerification();
-    _getData();
     //Ajout à la fonction séxécutant avant l'affichage de la page
     _getStatutUser();
   }
@@ -50,18 +54,18 @@ class _HomePageState extends State<HomePage> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: new Text("Verify your account"),
-          content: new Text("Please verify account in the link sent to email"),
+          title: new Text("Verify your account", style: Style.titreStyle),
+          content: new Text("Please verify account in the link sent to email", style: Style.texteStyle),
           actions: <Widget>[
             new FlatButton(
-              child: new Text("Resent link"),
+              child: new Text("Resent link", style: Style.texteStyle),
               onPressed: () {
                 Navigator.of(context).pop();
                 _resentVerifyEmail();
               },
             ),
             new FlatButton(
-              child: new Text("Dismiss"),
+              child: new Text("Dismiss", style: Style.texteStyle),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -85,45 +89,21 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _getData() async {
-    CollectionReference ref = Firestore.instance.collection('user');
-    QuerySnapshot eventsQuery = await ref.getDocuments();
-    eventsQuery.documents.forEach((document) {
-      if (document.data.containsKey(widget.userId)) {
-        setState(() {
-          userPack = document.data[widget.userId]['pack'];
-        });
-      }
-    });
-  }
-
   Container _getAppBar() {
     return new Container(
-      height: 60.0,
-      color: Color(0xFF43e97b),
-    );
-  }
-
-  Container _getAppbarWhite() {
-    return new Container(
-      margin: const EdgeInsets.only(top: 24.0, right: 12.0, left: 12.0),
-      height: 55,
-      decoration: BoxDecoration(
-      borderRadius: new BorderRadius.circular(4.0),
-      color: Color(0xFFf7f7f7),
-      ),
+      height: 80.0,
+      color: StyleColor.colorOrange,
       child:  Row(
-           mainAxisAlignment: MainAxisAlignment.center,
+           mainAxisAlignment: MainAxisAlignment.start,
   children: <Widget>[
-     new Icon(FontAwesomeIcons.handshake,color: Color(0xFF43e97b),size: 40.0,),  
-    new Padding(
-       padding: const EdgeInsets.only(left: 35.0),
-      child: Text('MyServices', style: TextStyle(fontFamily: 'Satisfy', fontSize: 30, color: Color(0xFF4B4954))),
-    ),
      new Padding(
-       padding: const EdgeInsets.only(left: 20.0),
-    child: new Icon(FontAwesomeIcons.handshake,color: Color(0xFF43e97b),size: 40.0,),
+       padding: const EdgeInsets.only(left: 10.0, top: 10.0),
+      child: new Icon(FontAwesomeIcons.carrot,color: Color(0xFF67BF24),size: 40.0,),  
      ),
+    new Padding(
+       padding: const EdgeInsets.only(left: 15.0, top: 20.0),
+      child: Text('Le Bon Marché', style: TextStyle(fontFamily: 'ChelseaMarket', fontSize: 30, color: Colors.white)),
+    ),
   ],
 ),
     );
@@ -133,13 +113,88 @@ class _HomePageState extends State<HomePage> {
 
   _getDrawerItemWidget(int pos) {
     switch (pos) {
-      case 0:
-        return new Column(children: <Widget>[
-          new ProfilPage(
+      case 0: 
+      return "Agriculteur" == userStatus ? 
+      new Column(children: <Widget>[
+        new Text("Not developped yet")])
+      :
+      new Column(children: <Widget>[
+          new ProfilParticulier(
               auth: widget.auth,
               onSignedOut: widget.onSignedOut,
               userId: widget.userId),
         ]);
+      case 1:
+      return "Agriculteur" == userStatus ? 
+       new Text("Not developped yet")
+      :
+       new Stack(
+          children: <Widget>[
+            new Container(
+              padding: EdgeInsets.only(top: 60.0),
+              child: new Column(children: <Widget>[
+                FutureBuilder<List<Marche>>(
+                  future: dataFetch.getMarches(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) print(snapshot.error);
+                    return snapshot.hasData
+                        ? MarketParticulier(
+                            userId: widget.userId, marches: snapshot.data)
+                        : new Expanded(
+                            child: new Container(
+                            decoration: BoxDecoration(
+        image: DecorationImage(
+          colorFilter: new ColorFilter.mode(
+              Colors.black.withOpacity(0.05), BlendMode.dstATop),
+          image: AssetImage('assets/img/panierbio.jfif'),
+          fit: BoxFit.cover,
+        ),
+      ),
+                            child: Center(child: CircularProgressIndicator()),
+                          ));
+                  },
+                )
+              ]),
+            ),
+            _getAppBar(),
+          ],
+        );
+
+        case 2:
+      return "Agriculteur" == userStatus ? 
+       new Text("Not developped yet")
+      :
+       new Stack(
+          children: <Widget>[
+            new Container(
+              padding: EdgeInsets.only(top: 60.0),
+              child: new Column(children: <Widget>[
+                FutureBuilder<List<Commande>>(
+                  future: dataFetch.getCommandesUser(widget.userId),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) print(snapshot.error);
+                    return snapshot.hasData
+                        ? CommandsPage(
+                            userId: widget.userId, commandes: snapshot.data)
+                        : new Expanded(
+                            child: new Container(
+                            decoration: BoxDecoration(
+        image: DecorationImage(
+          colorFilter: new ColorFilter.mode(
+              Colors.black.withOpacity(0.05), BlendMode.dstATop),
+          image: AssetImage('assets/img/panierbio.jfif'),
+          fit: BoxFit.cover,
+        ),
+      ),
+                            child: Center(child: CircularProgressIndicator()),
+                          ));
+                  },
+                )
+              ]),
+            ),
+            _getAppBar(),
+          ],
+        );
 
       default:
         return new Center(
@@ -147,7 +202,7 @@ class _HomePageState extends State<HomePage> {
             'Error',
             style: const TextStyle(
                 color: Colors.white,
-                fontFamily: 'Satisfy',
+                fontFamily: 'IndieFlower',
                 fontWeight: FontWeight.w600,
                 fontSize: 36.0),
           ),
@@ -168,40 +223,34 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: new Theme(
         data: Theme.of(context).copyWith(
           // sets the background color of the `BottomNavigationBar`
-          canvasColor: Color(0xFF4B4954),
+          canvasColor: StyleColor.colorOrange,
           // sets the active color of the `BottomNavigationBar` if `Brightness` is light
         ),
         child: new BottomNavigationBar(
+          fixedColor: Colors.white,
           onTap: onTabTapped,
           currentIndex: _currentIndex,
           items: [
             BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.userAlt, color: Color(0xFF43e97b)),
+              icon: Icon(FontAwesomeIcons.userAlt, color: StyleColor.colorVert),
               title: Text(
                 'Profile',
-                style: TextStyle(fontFamily: 'Poppins'),
+                style: Style.titreStyle,
               ),
             ),
             BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.suitcase, color: Color(0xFF43e97b)),
+              icon: Icon(FontAwesomeIcons.shoppingBag, color: StyleColor.colorVert),
               title: Text(
-                'Your pack',
-                style: TextStyle(fontFamily: 'Poppins'),
+                'Market',
+                style: Style.titreStyle,
               ),
             ),
             BottomNavigationBarItem(
-                icon: Icon(FontAwesomeIcons.bookOpen, color: Color(0xFF43e97b)),
+                icon: Icon(FontAwesomeIcons.bookOpen, color: StyleColor.colorVert),
                 title: Text(
-                  'Open pack',
-                  style: TextStyle(fontFamily: 'Poppins'),
+                  'Commands',
+                  style: Style.titreStyle,
                 )),
-            BottomNavigationBarItem(
-                icon: Icon(FontAwesomeIcons.solidCalendar,
-                    color: Color(0xFF43e97b)),
-                title: Text(
-                  'Reserved services',
-                  style: TextStyle(fontFamily: 'Poppins'),
-                ))
           ],
         ),
       ),

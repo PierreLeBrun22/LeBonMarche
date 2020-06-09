@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lebonmarche/services/authentication.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lebonmarche/services/fetch_data.dart' as dataFetch;
+import 'package:lebonmarche/colors.dart';
 
 class Login extends StatefulWidget {
   Login({this.auth, this.onSignedIn});
@@ -28,12 +28,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   String _errorMessageSignup;
   String _firstName;
   String _name;
-   List<String> _companyList = <String>['Choose one'];
-  String _company = 'Choose one';
   List<String> _statutList = <String>['Choose one'];
   String _statut = 'Choose one';
-  List<String> _packList = <String>['Choose one'];
-  String _pack = 'Choose one';
 
   bool _isIos;
   bool _isLoading;
@@ -107,7 +103,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           userId = await widget.auth.signUp(_emailSignup, _passwordSignup);
           widget.auth.sendEmailVerification();
           _showVerifyEmailSentDialog();
-          dataFetch.pushUserDataSignupProfile(userId, _emailSignup, _firstName, _name, _company, _statut, _pack);
+          dataFetch.pushUserDataSignupProfile(userId, _emailSignup, _firstName, _name, _statut);
           print('Signed up user: $userId');
           final form = _formKeySignup.currentState;
           form.reset();
@@ -116,8 +112,6 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
             _emailSignup = '';
             _passwordSignup = '';
             _confirmPasswordSignup = '';
-            _pack = 'Choose one';
-            _company = 'Choose one';
             _statut = 'Choose one';
           });
         } catch (e) {
@@ -134,40 +128,13 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     }
   }
 
-  void _getCompany() async {  
-CollectionReference ref = Firestore.instance.collection('company');
-QuerySnapshot eventsQuery = await ref.getDocuments();
-    eventsQuery.documents.forEach((document) {
-       _companyList.add(document['name']);
-    });
-  }
-
-    void _getPack() async {  
-CollectionReference ref = Firestore.instance.collection('packs');
-QuerySnapshot eventsQuery = await ref.getDocuments();
-    eventsQuery.documents.forEach((document) {
-       if(document['name'] != 'Open') {
-        _packList.add(document['name']);
-      }
-    });
-  }
-
-  void _getStatus() async {  
-CollectionReference ref = Firestore.instance.collection('status');
-QuerySnapshot eventsQuery = await ref.getDocuments();
-    eventsQuery.documents.forEach((document) {
-       _statutList.add(document['name']);
-    });
-  }
-
   @override
   void initState() {
     _errorMessageSignup = "";
     _errorMessageLogin = "";
+    _statutList.add("Agriculteur");
+    _statutList.add("Particulier");
     _isLoading = false;
-    _getCompany();
-    _getStatus();
-    _getPack();
     super.initState();
   }
 
@@ -176,11 +143,11 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
       body: Container(
       height: MediaQuery.of(context).size.height,
       decoration: BoxDecoration(
-        color: Color(0xFF302f33),
+        color: StyleColor.colorOrange,
         image: DecorationImage(
           colorFilter: new ColorFilter.mode(
               Colors.black.withOpacity(0.05), BlendMode.dstATop),
-          image: AssetImage('assets/img/background.jpg'),
+          image: AssetImage('assets/img/panierbio.jfif'),
           fit: BoxFit.cover,
         ),
       ),
@@ -190,8 +157,8 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
             padding: EdgeInsets.only(top: 200.0),
             child: Center(
               child: new Icon(
-                FontAwesomeIcons.handshake,
-                color: Color(0xFF43e97b),
+                FontAwesomeIcons.carrot,
+                color: StyleColor.colorVert,
                 size: 60.0,
               ),
             ),
@@ -200,11 +167,11 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
               padding: EdgeInsets.only(top: 20.0),
               child: new Center(
                 child: new Text(
-                  "MyServices",
+                  "Le Bon Marché",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 40.0,
-                    fontFamily: 'Satisfy'
+                    fontFamily: 'ChelseaMarket'
                   ),
                 ),
               )),
@@ -233,6 +200,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                               "SIGN UP",
                               textAlign: TextAlign.center,
                               style: TextStyle(
+                                  fontFamily: 'Dosis',
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
                             ),
@@ -255,7 +223,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                   child: new FlatButton(
                     shape: new RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(30.0)),
-                    color: Color(0xFF43e97b),
+                    color: StyleColor.colorVert,
                     onPressed: () => gotoLogin(),
                     child: new Container(
                       padding: const EdgeInsets.symmetric(
@@ -270,6 +238,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                               "LOGIN",
                               textAlign: TextAlign.center,
                               style: TextStyle(
+                                  fontFamily: 'Dosis',
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
                             ),
@@ -297,7 +266,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
           image: DecorationImage(
             colorFilter: new ColorFilter.mode(
                 Colors.black.withOpacity(0.05), BlendMode.dstATop),
-            image: AssetImage('assets/img/background.jpg'),
+            image: AssetImage('assets/img/panierbio.jfif'),
             fit: BoxFit.cover,
           ),
         ),
@@ -309,8 +278,8 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                 padding: EdgeInsets.all(120.0),
                 child: Center(
                   child: new Icon(
-                FontAwesomeIcons.handshake,
-                color: Color(0xFF43e97b),
+                FontAwesomeIcons.carrot,
+                color: StyleColor.colorVert,
                 size: 60.0,
               ),
                 ),
@@ -323,9 +292,10 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                       child: new Text(
                         "EMAIL",
                         style: TextStyle(
+                           fontFamily: 'IndieFlower',
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF43e97b),
-                          fontSize: 15.0,
+                          color: StyleColor.colorVert,
+                          fontSize: 17.0,
                         ),
                       ),
                     ),
@@ -340,7 +310,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                        color: Color(0xFF43e97b),
+                        color: StyleColor.colorVert,
                         width: 0.5,
                         style: BorderStyle.solid),
                   ),
@@ -359,7 +329,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                         decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: 'exemple@exemple.com',
-                            hintStyle: TextStyle(color: Colors.grey),
+                            hintStyle: TextStyle(color: Colors.grey, fontFamily: 'Dosis'),
                             icon: new Icon(
                               Icons.mail,
                               color: Colors.grey,
@@ -383,9 +353,10 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                       child: new Text(
                         "PASSWORD",
                         style: TextStyle(
+                          fontFamily: 'IndieFlower',
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF43e97b),
-                          fontSize: 15.0,
+                          color: StyleColor.colorVert,
+                          fontSize: 17.0,
                         ),
                       ),
                     ),
@@ -400,7 +371,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                        color: Color(0xFF43e97b),
+                        color: StyleColor.colorVert,
                         width: 0.5,
                         style: BorderStyle.solid),
                   ),
@@ -419,7 +390,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                         decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: '*********',
-                            hintStyle: TextStyle(color: Colors.grey),
+                            hintStyle: TextStyle(color: Colors.grey, fontFamily: 'Dosis'),
                             icon: new Icon(
                               Icons.lock,
                               color: Colors.grey,
@@ -450,7 +421,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                         shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(30.0),
                         ),
-                        color: Color(0xFF43e97b),
+                        color: StyleColor.colorVert,
                         onPressed: () => {_validateAndSubmitLogin()},
                         child: new Container(
                           padding: const EdgeInsets.symmetric(
@@ -465,6 +436,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                                   "LOGIN",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
+                                      fontFamily: 'Dosis',
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -493,7 +465,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
           image: DecorationImage(
             colorFilter: new ColorFilter.mode(
                 Colors.black.withOpacity(0.05), BlendMode.dstATop),
-            image: AssetImage('assets/img/background.jpg'),
+            image: AssetImage('assets/img/panierbio.jfif'),
             fit: BoxFit.cover,
           ),
         ),
@@ -505,8 +477,8 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                 padding: EdgeInsets.all(100.0),
                 child: Center(
                   child: new Icon(
-                FontAwesomeIcons.handshake,
-                color: Color(0xFF43e97b),
+                FontAwesomeIcons.carrot,
+                color: StyleColor.colorVert,
                 size: 60.0,
               ),
                 ),
@@ -519,9 +491,10 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                       child: new Text(
                         "EMAIL",
                         style: TextStyle(
+                          fontFamily: 'IndieFlower',
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF43e97b),
-                          fontSize: 15.0,
+                          color: StyleColor.colorVert,
+                          fontSize: 17.0,
                         ),
                       ),
                     ),
@@ -536,7 +509,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                        color: Color(0xFF43e97b),
+                        color: StyleColor.colorVert,
                         width: 0.5,
                         style: BorderStyle.solid),
                   ),
@@ -555,7 +528,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                         decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: 'exemple@exemple.com',
-                            hintStyle: TextStyle(color: Colors.grey),
+                            hintStyle: TextStyle(color: Colors.grey, fontFamily: 'Dosis'),
                             icon: new Icon(
                               Icons.mail,
                               color: Colors.grey,
@@ -579,9 +552,10 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                       child: new Text(
                         "PASSWORD",
                         style: TextStyle(
+                          fontFamily: 'IndieFlower',
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF43e97b),
-                          fontSize: 15.0,
+                          color: StyleColor.colorVert,
+                          fontSize: 17.0,
                         ),
                       ),
                     ),
@@ -596,7 +570,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                        color: Color(0xFF43e97b),
+                        color: StyleColor.colorVert,
                         width: 0.5,
                         style: BorderStyle.solid),
                   ),
@@ -615,7 +589,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                         decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: '*********',
-                            hintStyle: TextStyle(color: Colors.grey),
+                            hintStyle: TextStyle(color: Colors.grey, fontFamily: 'Dosis'),
                             icon: new Icon(
                               Icons.lock,
                               color: Colors.grey,
@@ -639,9 +613,10 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                       child: new Text(
                         "CONFIRM PASSWORD",
                         style: TextStyle(
+                          fontFamily: 'IndieFlower',
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF43e97b),
-                          fontSize: 15.0,
+                          color: StyleColor.colorVert,
+                          fontSize: 17.0,
                         ),
                       ),
                     ),
@@ -656,7 +631,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                        color: Color(0xFF43e97b),
+                        color: StyleColor.colorVert,
                         width: 0.5,
                         style: BorderStyle.solid),
                   ),
@@ -675,7 +650,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                         decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: '*********',
-                            hintStyle: TextStyle(color: Colors.grey),
+                            hintStyle: TextStyle(color: Colors.grey, fontFamily: 'Dosis'),
                             icon: new Icon(
                               Icons.lock,
                               color: Colors.grey,
@@ -700,9 +675,10 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                       child: new Text(
                         "FIRST NAME",
                         style: TextStyle(
+                          fontFamily: 'IndieFlower',
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF43e97b),
-                          fontSize: 15.0,
+                          color: StyleColor.colorVert,
+                          fontSize: 17.0,
                         ),
                       ),
                     ),
@@ -717,7 +693,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                        color: Color(0xFF43e97b),
+                        color: StyleColor.colorVert,
                         width: 0.5,
                         style: BorderStyle.solid),
                   ),
@@ -736,7 +712,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                         decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: 'First name',
-                            hintStyle: TextStyle(color: Colors.grey),
+                            hintStyle: TextStyle(color: Colors.grey, fontFamily: 'Dosis'),
                             icon: new Icon(
                               FontAwesomeIcons.userAlt,
                               color: Colors.grey,
@@ -760,9 +736,10 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                       child: new Text(
                         "NAME",
                         style: TextStyle(
+                          fontFamily: 'IndieFlower',
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF43e97b),
-                          fontSize: 15.0,
+                          color: StyleColor.colorVert,
+                          fontSize: 17.0,
                         ),
                       ),
                     ),
@@ -777,7 +754,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                        color: Color(0xFF43e97b),
+                        color: StyleColor.colorVert,
                         width: 0.5,
                         style: BorderStyle.solid),
                   ),
@@ -796,7 +773,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                         decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: 'Name',
-                            hintStyle: TextStyle(color: Colors.grey),
+                            hintStyle: TextStyle(color: Colors.grey, fontFamily: 'Dosis'),
                             icon: new Icon(
                               FontAwesomeIcons.userAlt,
                               color: Colors.grey,
@@ -812,82 +789,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                Divider(
                 height: 24.0,
               ),
-              new Row(
-                children: <Widget>[
-                  new Expanded(
-                    child: new Padding(
-                      padding: const EdgeInsets.only(left: 40.0),
-                      child: new Text(
-                        "COMPANY",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF43e97b),
-                          fontSize: 15.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              new Container(
-                width: MediaQuery.of(context).size.width,
-                margin:
-                    const EdgeInsets.only(left: 40.0, right: 40.0, top: 10.0),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                        color: Color(0xFF43e97b),
-                        width: 0.5,
-                        style: BorderStyle.solid),
-                  ),
-                ),
-                padding: const EdgeInsets.only(left: 0.0, right: 10.0),
-                child: new Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    new Expanded(
-                      child:new FormField<String>(
-          builder: (FormFieldState<String> state) {
-            return InputDecorator(
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                icon: const Icon(FontAwesomeIcons.solidBuilding, color: Colors.grey),
-                errorText: state.hasError ? state.errorText : null,
-              ),
-              isEmpty: _company == 'Choose one',
-              child: new DropdownButtonHideUnderline(
-                child: new DropdownButton<String>(
-                  value: _company,
-                  isDense: true,
-                  onChanged: (String newValue) {
-                    setState(() {
-                      _company = newValue;
-                      state.didChange(newValue);
-                    });
-                  },
-                  items: _companyList.map((String value) {
-                    return new DropdownMenuItem<String>(
-                      value: value,
-                      child: new Text(value),
-                    );
-                  }).toList(),
-                ),
-              ),
-            );
-          },
-          validator: (val) {
-            return  val != null && val != 'Choose one' ? null : 'Please select a company';
-          },
-        ),
-        )
-                  ],
-                ),
-              ),
-              Divider(
-                height: 24.0,
-              ),
+
               new Row(
                 children: <Widget>[
                   new Expanded(
@@ -896,9 +798,10 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                       child: new Text(
                         "STATUS",
                         style: TextStyle(
+                          fontFamily: 'IndieFlower',
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF43e97b),
-                          fontSize: 15.0,
+                          color: StyleColor.colorVert,
+                          fontSize: 17.0,
                         ),
                       ),
                     ),
@@ -913,7 +816,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                        color: Color(0xFF43e97b),
+                        color: StyleColor.colorVert,
                         width: 0.5,
                         style: BorderStyle.solid),
                   ),
@@ -946,7 +849,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                   items: _statutList.map((String value) {
                     return new DropdownMenuItem<String>(
                       value: value,
-                      child: new Text(value),
+                      child: new Text(value, style: new TextStyle(fontFamily: 'Dosis')),
                     );
                   }).toList(),
                 ),
@@ -964,82 +867,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                Divider(
                 height: 24.0,
               ),
-              new Row(
-                children: <Widget>[
-                  new Expanded(
-                    child: new Padding(
-                      padding: const EdgeInsets.only(left: 40.0),
-                      child: new Text(
-                        "PACK",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF43e97b),
-                          fontSize: 15.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              new Container(
-                width: MediaQuery.of(context).size.width,
-                margin:
-                    const EdgeInsets.only(left: 40.0, right: 40.0, top: 10.0),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                        color: Color(0xFF43e97b),
-                        width: 0.5,
-                        style: BorderStyle.solid),
-                  ),
-                ),
-                padding: const EdgeInsets.only(left: 0.0, right: 10.0),
-                child: new Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    new Expanded(
-                      child:new FormField<String>(
-          builder: (FormFieldState<String> state) {
-            return InputDecorator(
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                icon: const Icon(FontAwesomeIcons.suitcase, color: Colors.grey),
-                errorText: state.hasError ? state.errorText : null,
-              ),
-              isEmpty: _pack == 'Choose one',
-              child: new DropdownButtonHideUnderline(
-                child: new DropdownButton<String>(
-                  value: _pack,
-                  isDense: true,
-                  onChanged: (String newValue) {
-                    setState(() {
-                      _pack = newValue;
-                      state.didChange(newValue);
-                    });
-                  },
-                  items: _packList.map((String value) {
-                    return new DropdownMenuItem<String>(
-                      value: value,
-                      child: new Text(value),
-                    );
-                  }).toList(),
-                ),
-              ),
-            );
-          },
-          validator: (val) {
-            return val != null && val != 'Choose one' ? null : 'Please select a pack';
-          },
-        ),
-        )
-                  ],
-                ),
-              ),
-              Divider(
-                height: 24.0,
-              ),
+              
               new Container(
                   margin: const EdgeInsets.only(top: 10.0, left: 40.0),
                   child: _showErrorMessageSignup()),
@@ -1055,7 +883,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                         shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(30.0),
                         ),
-                        color: Color(0xFF43e97b),
+                        color: StyleColor.colorVert,
                         onPressed: () => {_validateAndSubmitSignup()},
                         child: new Container(
                           padding: const EdgeInsets.symmetric(
@@ -1070,6 +898,7 @@ QuerySnapshot eventsQuery = await ref.getDocuments();
                                   "SIGN UP",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
+                                      fontFamily: 'Dosis',
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold),
                                 ),

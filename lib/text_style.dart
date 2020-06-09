@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 
 class Style {
+  static final titreStyle = const TextStyle(
+    fontFamily: 'IndieFlower',
+    fontSize: 20.0,
+    fontWeight: FontWeight.w400
+  );
+  static final texteStyle = const TextStyle(
+    fontFamily: 'Dosis'
+  );
   static final baseTextStyle = const TextStyle(
     fontFamily: 'Poppins'
   );

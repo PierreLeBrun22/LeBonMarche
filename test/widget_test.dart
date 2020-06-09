@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lebonmarche/model/service.dart';
+import 'package:lebonmarche/model/marche.dart';
 import 'package:image_test_utils/image_test_utils.dart';
+import 'package:lebonmarche/Widgets/Market/MarketParticulier.dart';
 
-List<Service> services = [
-  const Service(
-    name: "Daycare",
-    location: "Lannion",
-    description: "A coupon for 2 hours",
-    image:
-        "https://raw.githubusercontent.com/PierreLeBrun22/MyServices/master/assets/img/baby.png",
-    partners: ["Daycare Lannion", "Baby Way"],
-    prix: 20,
-    statut: "Both",
-    serviceId: "-LeHAyX79q_HBaW-s9xQ",
+List<Marche> marches = [
+  const Marche(
+    marcheId: "mID",
+    name: "Name",
+    location: "Location",
+    description: "Description",
+    agriculteurId: "aID",
+    photoCouverture: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQBir2UKxyY9k2NleKRP_crBXqrctxzEIWbOgY0igp17x1oXhJi&usqp=CAU",
+    photoAgriculteur: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQBir2UKxyY9k2NleKRP_crBXqrctxzEIWbOgY0igp17x1oXhJi&usqp=CAU",
+    jourDelai: 2,
   ),
 ];
 
 void main() {
   //Test functionnal
-  testWidgets('Succes if the services are displayed', (WidgetTester tester) async {
+  testWidgets('Succes if the marches are displayed', (WidgetTester tester) async {
     provideMockedNetworkImages(() async {
       
       Widget testWidget = new MediaQuery(
@@ -31,6 +31,7 @@ void main() {
               new Container(
                 padding: EdgeInsets.only(top: 60.0),
                 child: new Column(children: <Widget>[
+                  new MarketParticulier(userId: "sdfsdfsdfsdfsfd", marches: marches)
                 ]),
               ),
             ],
@@ -38,9 +39,8 @@ void main() {
 
       await tester.pumpWidget(testWidget);
 
-      expect(find.text('Daycare'), findsOneWidget);
-      expect(find.text('Statut: Both'), findsOneWidget);
-      expect(find.text("Prix TVA: "+(20+20*0.2).toString()+" €"), findsOneWidget);
+      expect(find.text('Name'), findsOneWidget);
+      expect(find.text('Location'), findsOneWidget);
 
       /// No crashes.
     });
