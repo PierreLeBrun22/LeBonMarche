@@ -13,7 +13,7 @@ matrix:
     - env: JOB=PR/TEST
       os: linux
       language: generic
-      sudo: false
+      sudo: true
       addons:
         apt:
           # Flutter depends on /usr/lib/x86_64-linux-gnu/libstdc++.so.6 version GLIBCXX_3.4.18
@@ -49,7 +49,7 @@ matrix:
           - extra-google-m2repository
           - extra-google-android-support
       jdk: oraclejdk8
-      sudo: false
+      sudo: true
       addons:
         apt:
           # Flutter depends on /usr/lib/x86_64-linux-gnu/libstdc++.so.6 version GLIBCXX_3.4.18
